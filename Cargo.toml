@@ -1,0 +1,19 @@
+[package]
+name = "tempt"
+version = "0.1.0"
+edition = "2024"
+authors = ["Michael Ni <michael.ni678@gmail.com>"]
+repository = "https://github.com/michaelni678/tempt"
+homepage = "https://github.com/michaelni678/tempt"
+readme = "README.md"
+license = "Apache-2.0"
+categories = ["development-tools"]
+description = "Templating for tokens"
+documentation = "https://docs.rs/tempt"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1"
+tout = "0.5.0"
