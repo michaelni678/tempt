@@ -16,4 +16,4 @@ proc-macro = true
 
 [dependencies]
 proc-macro2 = "1"
-tout = "0.5.0"
+tout = "0.5.1"

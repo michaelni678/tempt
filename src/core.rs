@@ -95,30 +95,31 @@ fn template(parser: &mut Parser, tables: Vec<Table>) -> TokenStream {
 
     let mut hooks = Hooks::new().punct(|output, punct, parser| {
         if punct.is_char('#')
-            && let Some((repetition, _)) = parser.next2_if_map_trees_and(
+            && let Some(repetition) = parser.next_group_if(Group::is_parenthesized)
+        {
+            if let Some((separator, _)) = parser.next2_if_map_trees_and(
                 TokenTree::into_group,
                 Group::is_parenthesized,
                 TokenTree::into_punct,
                 |punct| punct.is_char('*'),
-            )
-        {
-            for table in &tables {
-                let mut hooks = Hooks::new().punct(|output, punct, parser| {
-                    if punct.is_char('#')
-                        && let Some(replacement) =
-                            parser.next_if_map_ident(|ident| table.get(&ident).ok_or(ident))
-                    {
-                        output.extend(replacement.stream());
-                        return None;
-                    }
+            ) && let Some((last, others)) = tables.split_last()
+            {
+                for table in others {
+                    substitutions(output, table, repetition.stream());
+                    output.extend(separator.stream());
+                }
 
-                    Some(punct)
-                });
+                substitutions(output, last, repetition.stream());
+                return None;
+            } else if parser.skip_punct_if(|punct| punct.is_char('*')) {
+                for table in &tables {
+                    substitutions(output, table, repetition.stream());
+                }
 
-                hooks.visit_stream(output, repetition.stream());
+                return None;
             }
 
-            return None;
+            parser.restore(repetition);
         }
 
         Some(punct)
@@ -127,4 +128,20 @@ fn template(parser: &mut Parser, tables: Vec<Table>) -> TokenStream {
     parser.visit(&mut hooks, &mut output);
 
     output
+}
+
+fn substitutions(output: &mut TokenStream, table: &Table, repetition: TokenStream) {
+    let mut hooks = Hooks::new().punct(|output, punct, parser| {
+        if punct.is_char('#')
+            && let Some(replacement) =
+                parser.next_if_map_ident(|ident| table.get(&ident).ok_or(ident))
+        {
+            output.extend(replacement.stream());
+            return None;
+        }
+
+        Some(punct)
+    });
+
+    hooks.visit_stream(output, repetition);
 }
