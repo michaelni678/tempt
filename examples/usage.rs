@@ -1,4 +1,4 @@
-//! Complete example from the README and usage documentation.
+//! Complete example from the usage section of the README and documentation.
 
 use tempt::tempt;
 

@@ -1,3 +1,5 @@
+//! Complete example from the nested invocations section of the documentation.
+
 use tempt::tempt;
 
 trait IsNonnegative {
