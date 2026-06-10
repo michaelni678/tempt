@@ -127,8 +127,8 @@
 //! table below is equivalent to the table above:
 //!
 //! ```text
-//! field_name [ name   ][ age    ][ email  ]
-//! field_type [ String ][ u8     ][ String ];
+//! field_name [ name   ][ age ][ email  ]
+//! field_type [ String ][ u8  ][ String ];
 //! ```
 //!
 //! ### Multiple Tables
