@@ -214,38 +214,38 @@
 //! ### Nested Invocations
 //!
 //! Templates can contain other [`tempt!`] invocations. In the example below,
-//! the builder methods of `UserBuilder` and `AdminBuilder` are generated from
-//! the same template.
+//! the replacements in the outer macro are substituted into the table of the
+//! inner macro.
 //!
 //! ```
-//! # {} /*
+//! use tempt::tempt;
+//!
+//! trait IsNonnegative {
+//!     fn is_nonnegative(self) -> bool;
+//! }
+//!
 //! tempt! {
-//!       builder_name    built_type
-//!     [ UserBuilder  ][ User       ]
-//!     [ AdminBuilder ][ Admin      ];
+//!     signed   [ self >= 0 ]
+//!     unsigned [ true      ];
 //!
 //!     #(
 //!         tempt! {
-//!               field_name    field_type
-//!             [ name       ][ String     ]
-//!             [ age        ][ u8         ]
-//!             [ email      ][ String     ];
+//!               number_type    implementation
+//!             [ i8          ][ #signed        ]
+//!             [ i16         ][ #signed        ]
+//!             [ u8          ][ #unsigned      ]
+//!             [ u16         ][ #unsigned      ];
 //!
-//!             impl #builder_name {
-//!                 #(
-//!                     fn #field_name(mut self, value: impl Into<#field_type>) -> Self {
-//!                         // ...
+//!             #(
+//!                 impl IsNonnegative for #number_type {
+//!                     fn is_nonnegative(self) -> bool {
+//!                         #implementation
 //!                     }
-//!                 )*
-//!
-//!                 fn build(self) -> Option<#built_type> {
-//!                     // ...
 //!                 }
-//!             }
+//!             )*
 //!         }
 //!     )*
 //! }
-//! # */
 //! ```
 //!
 //! [examples/usage.rs]: https://github.com/michaelni678/tempt/tree/main/examples/usage.rs
