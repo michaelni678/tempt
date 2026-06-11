@@ -78,8 +78,6 @@
 //! # */
 //! ```
 //!
-//! The full example is available at [examples/usage.rs].
-//!
 //! # Syntax
 //!
 //! The [`tempt!`] macro consists of tables and a template, separated by a
@@ -247,8 +245,6 @@
 //!     )*
 //! }
 //! ```
-//!
-//! [examples/usage.rs]: https://github.com/michaelni678/tempt/tree/main/examples/usage.rs
 use std::convert;
 
 use proc_macro::TokenStream;
